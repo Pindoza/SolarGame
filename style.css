@@ -1,46 +1,139 @@
+/* Background animation */
 body {
-    background: #111;
-    color: white;
-    font-family: Arial;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    color: white;
+    background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
+    background-size: 600% 600%;
+    animation: gradientMove 10s ease infinite;
 }
 
+/* Moving gradient */
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Main box */
 .box {
-    background: #222;
+    background: rgba(0, 0, 0, 0.6);
     padding: 30px;
-    border-radius: 10px;
+    border-radius: 15px;
     text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(0,255,200,0.3);
+    animation: fadeIn 1s ease forwards;
 }
 
+/* Fade in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Input */
 input {
-    padding: 10px;
+    padding: 12px;
     margin: 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
 }
 
+input:focus {
+    box-shadow: 0 0 10px #00ffcc;
+}
+
+/* Button style */
 button {
-    padding: 10px 20px;
-    background: #00ffcc;
+    padding: 12px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 10px;
+    background: linear-gradient(45deg, #00ffcc, #00ccff);
+    color: black;
+    font-weight: bold;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Button hover glow */
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ffcc;
+}
+
+/* Button click effect */
+button:active {
+    transform: scale(0.95);
+}
+
+/* Shine effect */
+button::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+    transform: rotate(25deg);
+    opacity: 0;
+}
+
+button:hover::after {
+    animation: shine 0.8s;
+}
+
+@keyframes shine {
+    from { transform: translateX(-100%) rotate(25deg); opacity: 1; }
+    to { transform: translateX(100%) rotate(25deg); opacity: 0; }
+}
+
+/* Download items */
 .item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #333;
-    padding: 10px;
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
     margin: 10px 0;
-    border-radius: 5px;
+    border-radius: 8px;
+    transition: 0.3s;
+    animation: slideUp 0.5s ease forwards;
 }
 
-button:hover {
-    background: #00ccaa;
+/* Hover glow */
+.item:hover {
+    background: rgba(0,255,200,0.1);
+    transform: translateY(-3px);
+}
+
+/* Slide animation */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Result text animation */
+#result {
+    font-weight: bold;
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+}
+
+/* Downloads container fade */
+#downloads {
+    animation: fadeIn 0.5s ease forwards;
 }
