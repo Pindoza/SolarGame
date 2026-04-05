@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Code Unlock</title>
+    <title>Code Unlock Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="box">
-    <h2>Enter Code</h2>
+    <h2>🔐 Enter the Secret Code</h2>
     <input type="text" id="codeInput" placeholder="Type code here">
     <button onclick="checkCode()">Submit</button>
 
     <p id="result"></p>
 
-    <div id="secret" style="display:none;">
-        <h3>🎉 You unlocked the secret!</h3>
-        <p>GG bro 😎</p>
+    <div id="reward" style="display:none; margin-top:20px;">
+        <h3>🎉 Code Accepted!</h3>
+        <button onclick="downloadFile()">⬇ Download Reward</button>
     </div>
 </div>
 
 <script>
-const validCodes = ["1234", "secret", "admin"];
+const validCodes = ["1234", "secret", "unlock"];
 
 function checkCode() {
     let code = document.getElementById("codeInput").value;
     let result = document.getElementById("result");
-    let secret = document.getElementById("secret");
+    let reward = document.getElementById("reward");
 
     if (validCodes.includes(code)) {
         result.innerText = "ACCESS GRANTED 😎";
         result.style.color = "green";
-        secret.style.display = "block";
+        reward.style.display = "block";
     } else {
         result.innerText = "WRONG CODE 💀";
         result.style.color = "red";
-        secret.style.display = "none";
+        reward.style.display = "none";
     }
+}
+
+function downloadFile() {
+    // put your file in the repo (e.g. files/reward.zip)
+    window.location.href = "files/reward.zip";
 }
 </script>
 
