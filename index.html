@@ -1,60 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Unlock Downloads</title>
+    <title>Secure Unlock</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="box">
-    <h2>🔐 Enter Code</h2>
-    <input type="text" id="codeInput" placeholder="Type code here">
-    <button onclick="checkCode()">Submit</button>
+    <h2 class="glitch" data-text="ACCESS TERMINAL">ACCESS TERMINAL</h2>
+
+    <input type="text" id="codeInput" placeholder="Enter code">
+    <button onclick="startHack()">EXECUTE</button>
 
     <p id="result"></p>
+    <p id="typing"></p>
 
     <div id="downloads" style="display:none; margin-top:20px;">
-        <h3>📦 Available Downloads:</h3>
+        <h3>📦 FILES UNLOCKED:</h3>
 
         <div class="item">
-            <span>🎮 Game Files</span>
+            <span>🎮 Game</span>
             <button onclick="downloadFile('files/game.zip')">Download</button>
         </div>
 
         <div class="item">
-            <span>🖼 Secret Image</span>
+            <span>🖼 Image</span>
             <button onclick="downloadFile('files/image.png')">Download</button>
         </div>
 
         <div class="item">
-            <span>🎵 Music Pack</span>
+            <span>🎵 Music</span>
             <button onclick="downloadFile('files/music.mp3')">Download</button>
         </div>
-
     </div>
 </div>
+
+<audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+<audio id="success" src="https://www.soundjay.com/misc/success.wav"></audio>
 
 <script>
 const validCodes = ["1234", "secret", "unlock"];
 
-function checkCode() {
+function startHack() {
     let code = document.getElementById("codeInput").value;
     let result = document.getElementById("result");
+    let typing = document.getElementById("typing");
     let downloads = document.getElementById("downloads");
 
-    if (validCodes.includes(code)) {
-        result.innerText = "ACCESS GRANTED 😎";
-        result.style.color = "green";
-        downloads.style.display = "block";
-    } else {
-        result.innerText = "WRONG CODE 💀";
-        result.style.color = "red";
-        downloads.style.display = "none";
-    }
+    result.innerText = "";
+    downloads.style.display = "none";
+
+    typeText("Decrypting files...", typing);
+
+    playBeepLoop();
+
+    setTimeout(() => {
+        if (validCodes.includes(code)) {
+            stopBeep();
+            document.getElementById("success").play();
+            typeText("ACCESS GRANTED 😎", result);
+            downloads.style.display = "block";
+        } else {
+            stopBeep();
+            typeText("ACCESS DENIED 💀", result);
+        }
+    }, 3000);
+}
+
+function typeText(text, element) {
+    element.innerText = "";
+    let i = 0;
+
+    let interval = setInterval(() => {
+        element.innerText += text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+    }, 50);
 }
 
 function downloadFile(path) {
     window.location.href = path;
+}
+
+let beepInterval;
+
+function playBeepLoop() {
+    let beep = document.getElementById("beep");
+    beepInterval = setInterval(() => {
+        beep.currentTime = 0;
+        beep.play();
+    }, 200);
+}
+
+function stopBeep() {
+    clearInterval(beepInterval);
 }
 </script>
 
