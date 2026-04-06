@@ -1,0 +1,69 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    color: white;
+    font-family: Arial;
+}
+
+#stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+#ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(20,20,20,0.85);
+    padding: 12px;
+    border-radius: 10px;
+    z-index: 2;
+    display: none;
+}
+
+button, input {
+    padding: 8px;
+    margin: 3px;
+    border-radius: 6px;
+    border: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* unlock screen */
+#unlockScreen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #111, #000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+}
+
+#unlockBox {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    text-align: center;
+}
+
+#codeInput {
+    width: 200px;
+}
