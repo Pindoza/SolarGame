@@ -1,145 +1,140 @@
-diff --git a/styles.css b/styles.css
-index f73efaa7c334e829d8c18ee72501fee56d40e29b..1aadbc2979325df41c30e9abfe543e75c82c006e 100644
---- a/styles.css
-+++ b/styles.css
-@@ -1,70 +1,125 @@
- body {
-     margin: 0;
-     overflow: hidden;
--    background: black;
--    font-family: Arial;
-+    background: radial-gradient(circle at top, #081229, #02050f 65%, #000);
-+    font-family: Arial, sans-serif;
-+    color: #fff;
- }
- 
- #unlockScreen {
-     position: absolute;
-     width: 100%;
-     height: 100%;
-     background: rgba(0,0,0,0.9);
-     display: flex;
-     justify-content: center;
-     align-items: center;
-+    z-index: 10;
- }
- 
- #unlockBox {
--    padding: 20px;
--    background: linear-gradient(45deg, #111, #222);
--    border-radius: 10px;
-+    padding: 24px;
-+    min-width: 280px;
-+    background: linear-gradient(145deg, rgba(17,25,40,.95), rgba(30,58,138,.75));
-+    border: 1px solid rgba(96,165,250,0.5);
-+    border-radius: 14px;
-     text-align: center;
-     color: white;
--    box-shadow: 0 0 20px cyan;
-+    box-shadow: 0 0 24px rgba(34,211,238,0.55);
-+}
-+
-+#codeInput {
-+    width: 100%;
-+    box-sizing: border-box;
-+    padding: 10px 12px;
-+    border-radius: 8px;
-+    border: 1px solid #67e8f9;
-+    background: rgba(2, 6, 23, 0.8);
-+    color: #e0f2fe;
- }
- 
- #ui {
-     position: absolute;
--    top: 10px;
--    left: 10px;
-+    top: 12px;
-+    left: 12px;
-     display: none;
-+    padding: 12px;
-+    border-radius: 12px;
-+    border: 1px solid rgba(96, 165, 250, 0.6);
-+    background: rgba(15, 23, 42, 0.8);
-+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
-+    backdrop-filter: blur(4px);
-+}
-+
-+.panelTitle {
-+    font-weight: 700;
-+    letter-spacing: 0.4px;
-+    color: #bae6fd;
-+    margin-bottom: 10px;
-+}
-+
-+.controlRow {
-+    margin-bottom: 8px;
-+}
-+
-+.controlRow label {
-+    font-size: 14px;
-+    margin-right: 8px;
-+}
-+
-+select {
-+    min-width: 180px;
-+    padding: 8px;
-+    border-radius: 8px;
-+    border: 1px solid #38bdf8;
-+    background: rgba(2, 6, 23, 0.9);
-+    color: #e2e8f0;
-+}
-+
-+.buttons {
-+    display: flex;
-+    flex-wrap: wrap;
- }
- 
- button {
--    margin: 5px;
--    padding: 10px;
--    background: linear-gradient(45deg, #00f, #0ff);
-+    margin: 4px;
-+    padding: 9px 12px;
-+    background: linear-gradient(45deg, #2563eb, #06b6d4);
-     border: none;
-     color: white;
-     cursor: pointer;
--    border-radius: 5px;
--    transition: 0.3s;
-+    border-radius: 8px;
-+    transition: transform 0.15s ease, box-shadow 0.2s ease;
- }
- 
- button:hover {
--    transform: scale(1.1);
--    box-shadow: 0 0 10px cyan;
-+    transform: translateY(-1px) scale(1.03);
-+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.7);
-+}
-+
-+#status {
-+    min-height: 20px;
-+    color: #bae6fd;
- }
- 
- #stars {
-     position: fixed;
-     width: 100%;
-     height: 100%;
-     z-index: -1;
- }
- 
- .star {
-     position: absolute;
-     width: 2px;
-     height: 2px;
-     background: white;
-     border-radius: 50%;
-     animation: twinkle 2s infinite;
- }
- 
- @keyframes twinkle {
-     0% { opacity: 0.2; }
-     50% { opacity: 1; }
-     100% { opacity: 0.2; }
- }
+body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    font-family: Arial;
+    background: radial-gradient(circle at top, #081229, #02050f 65%, #000);
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+#unlockScreen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+#unlockBox {
+    padding: 20px;
+    background: linear-gradient(45deg, #111, #222);
+    border-radius: 10px;
+    padding: 24px;
+    min-width: 280px;
+    background: linear-gradient(145deg, rgba(17,25,40,.95), rgba(30,58,138,.75));
+    border: 1px solid rgba(96,165,250,0.5);
+    border-radius: 14px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 20px cyan;
+    box-shadow: 0 0 24px rgba(34,211,238,0.55);
+}
+
+#codeInput {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #67e8f9;
+    background: rgba(2, 6, 23, 0.8);
+    color: #e0f2fe;
+}
+
+#ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    top: 12px;
+    left: 12px;
+    display: none;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(96, 165, 250, 0.6);
+    background: rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+    backdrop-filter: blur(4px);
+}
+
+.panelTitle {
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #bae6fd;
+    margin-bottom: 10px;
+}
+
+.controlRow {
+    margin-bottom: 8px;
+}
+
+.controlRow label {
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+select {
+    min-width: 180px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #38bdf8;
+    background: rgba(2, 6, 23, 0.9);
+    color: #e2e8f0;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+button {
+    margin: 5px;
+    padding: 10px;
+    background: linear-gradient(45deg, #00f, #0ff);
+    margin: 4px;
+    padding: 9px 12px;
+    background: linear-gradient(45deg, #2563eb, #06b6d4);
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+    border-radius: 8px;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px cyan;
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.7);
+}
+
+#status {
+    min-height: 20px;
+    color: #bae6fd;
+}
+
+#stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
