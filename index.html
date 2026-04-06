@@ -15,10 +15,10 @@
             position: fixed;
             top: 10px;
             left: 10px;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             padding: 15px;
             border-radius: 10px;
-            width: 220px;
+            width: 240px;
         }
 
         input, button {
@@ -35,14 +35,18 @@
 
 <div id="ui">
     <label>Gravity</label>
-    <input type="range" id="gravity" min="0" max="1" step="0.01" value="0.1">
+    <input type="range" id="gravity" min="0" max="1" step="0.01" value="0.2">
 
     <label>Particle Size</label>
-    <input type="range" id="size" min="2" max="10" value="5">
+    <input type="range" id="size" min="2" max="12" value="5">
+
+    <label>Particle Count</label>
+    <input type="number" id="count" value="50">
 
     <label>Color</label>
     <input type="color" id="color" value="#00ffcc">
 
+    <button onclick="spawnParticles()">Spawn Particles</button>
     <button onclick="clearParticles()">Reset</button>
 </div>
 
@@ -59,27 +63,31 @@ let particles = [];
 
 const gravitySlider = document.getElementById("gravity");
 const sizeSlider = document.getElementById("size");
+const countInput = document.getElementById("count");
 const colorPicker = document.getElementById("color");
 
 class Particle {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.vx = (Math.random() - 0.5) * 4;
-        this.vy = (Math.random() - 0.5) * 4;
+
+        this.vx = (Math.random() - 0.5) * 6;
+        this.vy = (Math.random() - 0.5) * 6;
+
         this.size = parseInt(sizeSlider.value);
         this.color = colorPicker.value;
-        this.life = 100 + Math.random() * 100;
+
+        this.life = 200 + Math.random() * 100;
     }
 
     update() {
         this.vy += parseFloat(gravitySlider.value);
+
         this.x += this.vx;
         this.y += this.vy;
 
         this.life--;
 
-        // bounce on edges
         if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
         if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
     }
@@ -92,8 +100,25 @@ class Particle {
     }
 }
 
+function spawnParticles() {
+    let count = parseInt(countInput.value);
+
+    for (let i = 0; i < count; i++) {
+        let x = canvas.width / 2;
+        let y = canvas.height / 2;
+        particles.push(new Particle(x, y));
+    }
+}
+
+function clearParticles() {
+    particles = [];
+}
+
+// initial spawn so you SEE something immediately
+spawnParticles();
+
 function animate() {
-    ctx.fillStyle = "rgba(15, 23, 42, 0.2)";
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     particles.forEach((p, index) => {
@@ -108,23 +133,13 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-canvas.addEventListener("click", (e) => {
-    for (let i = 0; i < 10; i++) {
-        particles.push(new Particle(e.clientX, e.clientY));
-    }
-});
+animate();
 
-function clearParticles() {
-    particles = [];
-}
-
-// resize handling
+// resize fix
 window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 });
-
-animate();
 </script>
 
 </body>
