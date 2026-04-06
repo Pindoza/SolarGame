@@ -6,6 +6,7 @@
 
 <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
 <div id="stars"></div>
@@ -14,7 +15,7 @@
     <div id="unlockBox">
         <h2>Enter Access Code</h2>
         <input id="codeInput" placeholder="code">
-        <br>
+        <br><br>
         <button onclick="checkCode()">Unlock</button>
         <p id="status"></p>
     </div>
@@ -30,11 +31,6 @@
 
 <canvas id="c"></canvas>
 
-<script src="script.js"></script>
-
-</body>
-</html>
-
 <script>
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
@@ -47,7 +43,7 @@ let unlocked = false;
 
 const G = 0.2;
 
-/* -------- STAR BACKGROUND -------- */
+/* -------- STARS -------- */
 function generateStars() {
     const container = document.getElementById("stars");
     for (let i = 0; i < 200; i++) {
@@ -86,7 +82,6 @@ class Body {
             grad.addColorStop(1, "transparent");
 
             ctx.fillStyle = grad;
-
             ctx.shadowBlur = 50;
             ctx.shadowColor = "yellow";
         }
@@ -102,7 +97,6 @@ class Body {
 
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
-
         ctx.shadowBlur = 0;
     }
 }
@@ -157,15 +151,12 @@ function spawnPlanet(withMoons) {
     let vy = Math.cos(angle) * speed;
 
     let planet = new Body(x, y, vx, vy, 8, 5, "planet");
-
     bodies.push(planet);
 
     if (withMoons) {
         let moonCount = Math.floor(Math.random()*3)+1;
-
         for (let i = 0; i < moonCount; i++) {
-            let moon = createMoon(planet);
-            bodies.push(moon);
+            bodies.push(createMoon(planet));
         }
     }
 }
@@ -211,7 +202,7 @@ function loop(){
 }
 loop();
 
-/* -------- UNLOCK -------- */
+/* -------- UNLOCK SYSTEM -------- */
 async function hashCode(code){
     const encoder = new TextEncoder();
     const data = encoder.encode(code);
@@ -220,20 +211,25 @@ async function hashCode(code){
     return hashArray.map(b=>b.toString(16).padStart(2,"0")).join("");
 }
 
+/* PUT YOUR VALID HASHES HERE */
 const validHashes = [\
     "1892495595a89843cea0de5ba646cd63b82ba418fb2ac76ab36adc880d2f61ff",
     "0229d07fb8acc463d2f53e227fd5abe94e43d407635c819abaa37d947ac4cf86",
 ];
 
+
 async function checkCode(){
     let input = document.getElementById("codeInput").value.trim();
-
     let hashed = await hashCode(input);
+
+    console.log("Input:", input);
+    console.log("Hash:", hashed);
 
     if(validHashes.includes(hashed)){
         unlocked = true;
         document.getElementById("unlockScreen").style.display="none";
         document.getElementById("ui").style.display="block";
+        document.getElementById("status").innerText = "Unlocked!";
     } else {
         document.getElementById("status").innerText = "Wrong code";
     }
