@@ -1,110 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Secure Unlock</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Experiment Lab</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            overflow: hidden;
+        }
+
+        #ui {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.6);
+            padding: 15px;
+            border-radius: 10px;
+            width: 220px;
+        }
+
+        input, button {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
-<!-- particles background -->
-<div class="particles"></div>
+<div id="ui">
+    <label>Gravity</label>
+    <input type="range" id="gravity" min="0" max="1" step="0.01" value="0.1">
 
-<div class="box">
-    <h2 class="glitch" data-text="ACCESS TERMINAL">ACCESS TERMINAL</h2>
+    <label>Particle Size</label>
+    <input type="range" id="size" min="2" max="10" value="5">
 
-    <input type="text" id="codeInput" placeholder="Enter code">
-    <button onclick="startHack()">EXECUTE</button>
+    <label>Color</label>
+    <input type="color" id="color" value="#00ffcc">
 
-    <p id="typing"></p>
-    <p id="result"></p>
+    <button onclick="clearParticles()">Reset</button>
 </div>
 
-<!-- sounds -->
-<audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
-<audio id="success" src="https://www.soundjay.com/misc/success.wav"></audio>
+<canvas id="canvas"></canvas>
 
 <script>
-const validCodes = ["1234", "secret", "unlock"];
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-// start hacking animation
-function startHack() {
-    let code = document.getElementById("codeInput").value.toLowerCase();
-    let result = document.getElementById("result");
-    let typing = document.getElementById("typing");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-    result.innerText = "";
-    typing.innerText = "";
+let particles = [];
 
-    typeText("Decrypting files...", typing);
-    playBeepLoop();
+const gravitySlider = document.getElementById("gravity");
+const sizeSlider = document.getElementById("size");
+const colorPicker = document.getElementById("color");
 
-    setTimeout(() => {
-        stopBeep();
+class Particle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 4;
+        this.vy = (Math.random() - 0.5) * 4;
+        this.size = parseInt(sizeSlider.value);
+        this.color = colorPicker.value;
+        this.life = 100 + Math.random() * 100;
+    }
 
-        if (validCodes.includes(code)) {
-            document.getElementById("success").play();
-            typeText("ACCESS GRANTED 😎", result);
+    update() {
+        this.vy += parseFloat(gravitySlider.value);
+        this.x += this.vx;
+        this.y += this.vy;
 
-            // redirect to game after short delay
-            setTimeout(() => {
-                window.location.href = "game.html";
-            }, 1500);
+        this.life--;
 
-        } else {
-            typeText("ACCESS DENIED 💀", result);
-        }
-    }, 3000);
-}
+        // bounce on edges
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
 
-// typing effect
-function typeText(text, element) {
-    element.innerText = "";
-    let i = 0;
-
-    let interval = setInterval(() => {
-        element.innerText += text[i];
-        i++;
-        if (i >= text.length) clearInterval(interval);
-    }, 40);
-}
-
-// download (not used here but you can reuse)
-function downloadFile(path) {
-    window.location.href = path;
-}
-
-// beep loop
-let beepInterval;
-
-function playBeepLoop() {
-    let beep = document.getElementById("beep");
-    beepInterval = setInterval(() => {
-        beep.currentTime = 0;
-        beep.play();
-    }, 200);
-}
-
-function stopBeep() {
-    clearInterval(beepInterval);
-}
-
-// particle generator
-function createParticles() {
-    const container = document.querySelector(".particles");
-
-    for (let i = 0; i < 40; i++) {
-        let p = document.createElement("div");
-        p.className = "particle";
-
-        p.style.left = Math.random() * 100 + "vw";
-        p.style.animationDuration = (5 + Math.random() * 10) + "s";
-        p.style.opacity = Math.random();
-
-        container.appendChild(p);
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
     }
 }
 
-createParticles();
+function animate() {
+    ctx.fillStyle = "rgba(15, 23, 42, 0.2)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+
+        if (p.life <= 0) {
+            particles.splice(index, 1);
+        }
+    });
+
+    requestAnimationFrame(animate);
+}
+
+canvas.addEventListener("click", (e) => {
+    for (let i = 0; i < 10; i++) {
+        particles.push(new Particle(e.clientX, e.clientY));
+    }
+});
+
+function clearParticles() {
+    particles = [];
+}
+
+// resize handling
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+animate();
 </script>
 
 </body>
