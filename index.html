@@ -266,7 +266,7 @@ async function checkCode(){
 
     <div class="controlRow">
         <label for="planetSelect">Planet:</label>
-        <select id="planetSelect">
+        <select id="planetSelect" onchange="updateSelectedPlanetLabel()">
             <option value="mercury">Mercury</option>
             <option value="venus">Venus</option>
             <option value="earth" selected>Earth</option>
@@ -277,6 +277,7 @@ async function checkCode(){
             <option value="neptune">Neptune</option>
         </select>
     </div>
+    <p id="selectionStatus"></p>
 
     <div class="controlRow buttons">
         <button type="button" onclick="spawnSelectedPlanet(true)">Selected + Moons</button>
@@ -339,7 +340,7 @@ if (unlockLayers.length > 1) {
 
 /* -------- BODY -------- */
 class Body {
-    constructor(x, y, vx, vy, mass, radius, type, name = "", model = null) {
+    constructor(x, y, vx, vy, mass, radius, type, name = "", model = null, parent = null) {
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -349,6 +350,7 @@ class Body {
         this.type = type;
         this.name = name;
         this.model = model;
+        this.parent = parent;
     }
 
     draw() {
@@ -363,8 +365,8 @@ class Body {
             grad.addColorStop(1, "transparent");
 
             ctx.fillStyle = grad;
-            ctx.shadowBlur = 50;
-            ctx.shadowColor = "yellow";
+            ctx.shadowBlur = 120;
+            ctx.shadowColor = "#fff59d";
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
@@ -372,8 +374,11 @@ class Body {
         else if (this.type === "blackhole") {
             ctx.beginPath();
             ctx.fillStyle = "white";
+            ctx.shadowBlur = 80;
+            ctx.shadowColor = "rgba(255,255,255,0.9)";
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fill();
+            ctx.shadowBlur = 0;
         }
         else if (this.type === "planet") {
             this.drawPlanetModel();
@@ -381,8 +386,11 @@ class Body {
         else {
             ctx.beginPath();
             ctx.fillStyle = "#9ca3af";
+            ctx.shadowBlur = 16;
+            ctx.shadowColor = "rgba(226,232,240,0.75)";
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fill();
+            ctx.shadowBlur = 0;
         }
 
         this.drawLabel();
@@ -406,8 +414,11 @@ class Body {
         planetGradient.addColorStop(1, accent);
 
         ctx.fillStyle = planetGradient;
+        ctx.shadowBlur = Math.max(20, this.radius * 4);
+        ctx.shadowColor = primary;
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
+        ctx.shadowBlur = 0;
 
         if (this.model?.ring) {
             ctx.beginPath();
@@ -449,7 +460,7 @@ function applyGravity(a, b) {
 
 /* -------- MOON -------- */
 function createMoon(planet, index = 1) {
-    let distance = 20 + Math.random() * 30;
+    let distance = 10 + Math.random() * 12;
     let angle = Math.random() * Math.PI * 2;
 
     let x = planet.x + Math.cos(angle) * distance;
@@ -460,7 +471,7 @@ function createMoon(planet, index = 1) {
     let vx = -Math.sin(angle) * speed + planet.vx;
     let vy = Math.cos(angle) * speed + planet.vy;
 
-    return new Body(x, y, vx, vy, 1, 2, "moon", `${planet.name} Moon ${index}`);
+    return new Body(x, y, vx, vy, 1.8, 2.4, "moon", `${planet.name} Moon ${index}`, null, planet);
 }
 
 /* -------- PLANET -------- */
@@ -490,7 +501,7 @@ function spawnPlanet(withMoons, planetKey = "earth") {
 }
 
 function spawnSelectedPlanet(withMoons) {
-    const selected = document.getElementById("planetSelect").value;
+    const selected = getSelectedPlanetKey();
     spawnPlanet(withMoons, selected);
 }
 
@@ -513,11 +524,35 @@ function clearBodies() {
     bodies = [sun];
 }
 
+function getSelectedPlanetKey() {
+    const select = document.getElementById("planetSelect");
+    const selected = select?.value || "earth";
+    if (!PLANET_MODELS[selected]) return "earth";
+    return selected;
+}
+
+function updateSelectedPlanetLabel() {
+    const selected = getSelectedPlanetKey();
+    const selectedPlanet = PLANET_MODELS[selected];
+    document.getElementById("selectionStatus").innerText = `Selected planet: ${selectedPlanet.name}`;
+}
+
 /* -------- UPDATE -------- */
 function update() {
     for (let i=0;i<bodies.length;i++){
         for (let j=0;j<bodies.length;j++){
             if(i!==j) applyGravity(bodies[i], bodies[j]);
+        }
+    }
+
+    for (const body of bodies) {
+        if (body.type === "moon" && body.parent) {
+            const dx = body.parent.x - body.x;
+            const dy = body.parent.y - body.y;
+            const dist = Math.sqrt(dx * dx + dy * dy) + 0.1;
+            const lockForce = (G * body.parent.mass * body.mass * 2.5) / (dist * dist);
+            body.vx += (lockForce * dx / dist) / body.mass;
+            body.vy += (lockForce * dy / dist) / body.mass;
         }
     }
 
@@ -540,6 +575,7 @@ function loop(){
     requestAnimationFrame(loop);
 }
 loop();
+updateSelectedPlanetLabel();
 
 /* -------- UNLOCK SYSTEM -------- */
 async function hashCode(code){
